@@ -65,6 +65,34 @@ for (0..ids.len) |i| {
 std.mem.sort(u64, ids, {}, std.sort.asc(u64))
 ```
 
+## Installation
+
+You can install `stdx` just like any other `zig` dependency by editing your `build.zig.zon` file.
+
+```zig
+    .dependencies = .{
+        .kid = .{
+            .url = "https://github.com/kobolds-io/kid/archive/refs/tags/v0.0.1.tar.gz",
+            .hash = "",
+        },
+    },
+```
+
+run `zig build --fetch` to fetch the dependencies. This will return an error as the has will not match. Copy the new hash and try again.Sometimes `zig` is helpful and it caches stuff for you in the `zig-cache` dir. Try deleting that directory if you see some issues.
+
+In your `build.zig` file add the library as a dependency.
+
+```zig
+// ...boilerplate
+
+const kid_dep = b.dependency("kid", .{
+    .target = target,
+    .optimize = optimize,
+});
+const kid_mod = kid_dep.module("kid");
+
+exe.root_module.addImport("kid", kid_mod);
+```
 
 ## Benchmarks
 

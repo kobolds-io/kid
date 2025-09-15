@@ -111,11 +111,11 @@ It is pretty quick but probably not the fastest thing out there.
 |----------------|
 benchmark              runs     total time     time/run (avg ± σ)    (min ... max)                p75        p99        p995      
 -----------------------------------------------------------------------------------------------------------------------------
-generate 1 ids         100      54.486us       544ns ± 129ns         (515ns ... 1.813us)          544ns      1.813us    1.813us   
-generate 1000 ids      100      20.949ms       209.491us ± 19.37us   (196.753us ... 295.863us)    211.772us  295.863us  295.863us 
-generate 8192 ids      100      167.531ms      1.675ms ± 144.424us   (1.514ms ... 2.32ms)         1.699ms    2.32ms     2.32ms    
-generate 10_000 ids    100      204.087ms      2.04ms ± 176.443us    (1.857ms ... 2.763ms)        2.08ms     2.763ms    2.763ms   
-generate 100_000 ids   100      1.982s         19.826ms ± 761.926us  (18.681ms ... 22.972ms)      20.169ms   22.972ms   22.972ms  
-generate 1_000_000 ids 5        986.937ms      197.387ms ± 1.897ms   (194.234ms ... 199.391ms)    197.787ms  199.391ms  199.391ms 
+generate 1 ids         100      4.829us        48ns ± 41ns           (42ns ... 456ns)             45ns       456ns      456ns     
+generate 1000 ids      100      2.552ms        25.52us ± 955ns       (24.604us ... 29.312us)      25.881us   29.312us   29.312us  
+generate 8192 ids      100      20.241ms       202.417us ± 7.911us   (194.825us ... 233.678us)    203.553us  233.678us  233.678us 
+generate 10_000 ids    100      99.213ms       992.138us ± 76.048us  (240.061us ... 1.013ms)      1ms        1.013ms    1.013ms   
+generate 100_000 ids   100      1.199s         11.999ms ± 7.714us    (11.967ms ... 12.019ms)      12.001ms   12.019ms   12.019ms  
+generate 1_000_000 ids 5        609.893ms      121.978ms ± 46.345us  (121.895ms ... 121.999ms)    121.999ms  121.999ms  121.999ms 
 ```
 

@@ -54,7 +54,7 @@ where you sort by timestamp->count->node_id
 const ids = try allocator.alloc(u64, 100);
 defer allocator.free(ids);
 
-var kid = KID.init(10);
+var kid = KID.init(10, .{});
 
 // imagine this is randomized
 for (0..ids.len) |i| {

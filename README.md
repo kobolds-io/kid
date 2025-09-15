@@ -14,6 +14,7 @@ fn main() !void {
     // your code
     // ....
 
+    // The id that will be appended to the end of the ID to uniquely identify the node
     const node_id: u11 = 432;
     const kid = KID.init(node_id, .{});
 
@@ -23,6 +24,47 @@ fn main() !void {
     // ...
 }
 ```
+
+You can decode the ID for more detailed analysis or for log storage
+
+```zig
+    const node_id: u11 = 432;
+    const kid = KID.init(node_id, .{});
+
+    const id = kid.generate();
+
+    const decoded = kid.decode(id);
+
+
+    // the decoded struct is just the expanded ID
+    // const Decoded = struct {
+    //     timestamp_ms: u64,
+    //     counter: u32,
+    //     node_id: u16,
+    // };
+    log.debug("decoded id: {any}", .{decoded});
+
+```
+
+Sorting the generated ids is fairly simple. Because of how the ID is structured, you can rely on it being packed in the same order
+where you sort by timestamp->count->node_id
+
+```zig
+
+const ids = try allocator.alloc(u64, 100);
+defer allocator.free(ids);
+
+var kid = KID.init(10);
+
+// imagine this is randomized
+for (0..ids.len) |i| {
+    ids[i] = kid.generate();
+}
+
+// Use the std lib to sort
+std.mem.sort(u64, ids, {}, std.sort.asc(u64))
+```
+
 
 ## Benchmarks
 
@@ -47,5 +89,5 @@ generate 8192 ids      100      167.531ms      1.675ms ± 144.424us   (1.514ms .
 generate 10_000 ids    100      204.087ms      2.04ms ± 176.443us    (1.857ms ... 2.763ms)        2.08ms     2.763ms    2.763ms   
 generate 100_000 ids   100      1.982s         19.826ms ± 761.926us  (18.681ms ... 22.972ms)      20.169ms   22.972ms   22.972ms  
 generate 1_000_000 ids 5        986.937ms      197.387ms ± 1.897ms   (194.234ms ... 199.391ms)    197.787ms  199.391ms  199.391ms 
-
 ```
+

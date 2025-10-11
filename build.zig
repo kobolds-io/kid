@@ -66,6 +66,12 @@ fn setupBenchmarks(b: *std.Build, target: std.Build.ResolvedTarget, optimize: st
         .optimize = optimize,
     });
 
+    const uuid_dep = b.dependency("uuid", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    const uuid_mod = uuid_dep.module("uuid");
+
     const zbench_dep = b.dependency("zbench", .{
         .target = target,
         .optimize = optimize,
@@ -73,6 +79,7 @@ fn setupBenchmarks(b: *std.Build, target: std.Build.ResolvedTarget, optimize: st
     const zbench_mod = zbench_dep.module("zbench");
 
     bench_lib.root_module.addImport("kid", kid_mod);
+    bench_lib.root_module.addImport("uuid", uuid_mod);
     bench_lib.root_module.addImport("zbench", zbench_mod);
 
     const run_bench_tests = b.addRunArtifact(bench_lib);

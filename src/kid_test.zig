@@ -1,10 +1,10 @@
 const std = @import("std");
 const testing = std.testing;
 
-const KID = @import("./kid.zig").KID;
+const kid = @import("./kid.zig");
 
 test "generates sequential ids" {
-    var kid = KID.init(1, .{});
+    kid.configure(1, .{});
     const kid_0 = kid.generate();
     const kid_1 = kid.generate();
 
@@ -26,7 +26,7 @@ test "generates sequential ids" {
 test "can generate 8192 ids per ms" {
     const allocator = testing.allocator;
 
-    var kid = KID.init(2, .{});
+    kid.configure(2, .{});
 
     const iters = 100_000;
 

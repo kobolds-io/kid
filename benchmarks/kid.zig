@@ -4,43 +4,37 @@ const zbench = @import("zbench");
 const assert = std.debug.assert;
 const testing = std.testing;
 
-const KID = @import("kid").KID;
+const kid = @import("kid");
 
 pub fn BenchmarkKIDGenerateOne(_: std.mem.Allocator) void {
-    var kid = KID.init(100, .{});
     _ = kid.generate();
 }
 
 pub fn BenchmarkKIDGenerate1000(_: std.mem.Allocator) void {
-    var kid = KID.init(100, .{});
     for (0..1_000) |_| {
         _ = kid.generate();
     }
 }
 
 pub fn BenchmarkKIDGenerate8192(_: std.mem.Allocator) void {
-    var kid = KID.init(100, .{});
     for (0..8192) |_| {
         _ = kid.generate();
     }
 }
 
 pub fn BenchmarkKIDGenerate10000(_: std.mem.Allocator) void {
-    var kid = KID.init(100, .{});
     for (0..10_000) |_| {
         _ = kid.generate();
     }
 }
 
 pub fn BenchmarkKIDGenerate100000(_: std.mem.Allocator) void {
-    var kid = KID.init(100, .{});
     for (0..100_000) |_| {
         _ = kid.generate();
     }
 }
 
 pub fn BenchmarkKIDGenerate1000000(_: std.mem.Allocator) void {
-    var kid = KID.init(100, .{});
     for (0..1_000_000) |_| {
         _ = kid.generate();
     }
@@ -51,6 +45,8 @@ test "KID benchmarks" {
         .iterations = 100,
     });
     defer bench.deinit();
+
+    kid.configure(100, .{});
 
     try bench.add("generate 1 ids", BenchmarkKIDGenerateOne, .{});
     try bench.add("generate 1000 ids", BenchmarkKIDGenerate1000, .{});

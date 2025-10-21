@@ -16,7 +16,7 @@ fn main() !void {
 
     // The id that will be appended to the end of the ID to uniquely identify the node
     const node_id: u11 = 432;
-    const kid = KID.init(node_id, .{});
+    kid.configure(node_id, .{});
 
     const id = kid.generate();
 
@@ -29,7 +29,7 @@ You can decode the ID for more detailed analysis or for log storage
 
 ```zig
     const node_id: u11 = 432;
-    const kid = KID.init(node_id, .{});
+    kid.configure(node_id, .{});
 
     const id = kid.generate();
 
@@ -52,8 +52,6 @@ Sorting the generated ids is fairly simple. Because of how the ID is structured,
 
 const ids = try allocator.alloc(u64, 100);
 defer allocator.free(ids);
-
-var kid = KID.init(10, .{});
 
 // imagine this is randomized
 for (0..ids.len) |i| {

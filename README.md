@@ -1,5 +1,7 @@
 # KID
 
+> **CAUTION** this project has been archived. Please see https://codeberg.org/kobolds-io/kid. See https://github.com/kobolds-io/kobolds/blob/main/migrating.md for details
+
 KID (kobolds-id) is heavily influenced by Twitter snowflake id. It uses a fairly simple structure to guarantee uniqness. It is stored as an unsigned 64 bit integer that makes use of the system clock, a node identifier and a counter.
 
 ## Usage

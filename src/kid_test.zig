@@ -4,9 +4,11 @@ const testing = std.testing;
 const kid = @import("./kid.zig");
 
 test "generates sequential ids" {
+    const io = testing.io;
+
     kid.configure(1, .{});
-    const kid_0 = kid.generate();
-    const kid_1 = kid.generate();
+    const kid_0 = kid.generate(io);
+    const kid_1 = kid.generate(io);
 
     const kid_0_decoded = kid.decode(kid_0);
     const kid_1_decoded = kid.decode(kid_1);
@@ -25,6 +27,7 @@ test "generates sequential ids" {
 
 test "can generate 8192 ids per ms" {
     const allocator = testing.allocator;
+    const io = testing.io;
 
     kid.configure(2, .{});
 
@@ -34,7 +37,7 @@ test "can generate 8192 ids per ms" {
     defer ids.deinit(allocator);
 
     for (0..iters) |_| {
-        const id = kid.generate();
+        const id = kid.generate(io);
         ids.appendAssumeCapacity(id);
     }
 

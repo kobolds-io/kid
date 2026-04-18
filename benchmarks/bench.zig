@@ -2,8 +2,10 @@ const std = @import("std");
 const zbench = @import("zbench");
 
 test "prints system info" {
-    var stderr = std.fs.File.stderr().writerStreaming(&.{});
-    const writer = &stderr.interface;
+    const io = std.testing.io;
+    const stderr = std.Io.File.stderr();
+    var stderr_writer = stderr.writerStreaming(io, &.{});
+    const writer = &stderr_writer.interface;
 
     try writer.writeAll("--------------------------------------------------------\n");
     try writer.print("{f}", .{try zbench.getSystemInfo()});

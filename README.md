@@ -2,6 +2,11 @@
 
 KID (kobolds-id) is heavily influenced by Twitter snowflake id. It uses a fairly simple structure to guarantee uniqness. It is stored as an unsigned 64 bit integer that makes use of the system clock, a node identifier and a counter.
 
+| zig version | kid version |
+|-------------|-------------|
+| 0.15.x      | 0.0.3       |
+| 0.16.0      | 0.1.0       |
+
 ## Usage
 
 Using `kid` is just as simple as using any other `zig` dependency.
@@ -10,7 +15,9 @@ Using `kid` is just as simple as using any other `zig` dependency.
 // import the library into your file
 const kid = @import("kid");
 
-fn main() !void {
+fn main(init: std.process.Init) !void {
+    // since kid uses clocks, we need to include a `std.Io`
+    const io = init.io;
     // your code
     // ....
 
@@ -18,7 +25,7 @@ fn main() !void {
     const node_id: u11 = 432;
     kid.configure(node_id, .{});
 
-    const id = kid.generate();
+    const id = kid.generate(io);
 
     // your code
     // ...
@@ -31,7 +38,7 @@ You can decode the ID for more detailed analysis or for log storage
     const node_id: u11 = 432;
     kid.configure(node_id, .{});
 
-    const id = kid.generate();
+    const id = kid.generate(io);
 
     const decoded = kid.decode(id);
 
@@ -100,42 +107,42 @@ It is pretty quick but probably not the fastest thing out there. There are some 
   Operating System: linux x86_64
   CPU:              13th Gen Intel(R) Core(TM) i9-13900K
   CPU Cores:        24
-  Total Memory:     23.299GiB
+  Total Memory:     14.412GiB
 --------------------------------------------------------
 
 |----------------|
 | KID Benchmarks |
 |----------------|
-benchmark              runs     total time     time/run (avg ± σ)    (min ... max)                p75        p99        p995
------------------------------------------------------------------------------------------------------------------------------
-generate 1 ids         100      4.326us        43ns ± 36ns           (38ns ... 403ns)             39ns       403ns      403ns
-generate 1000 ids      100      11.824ms       118.244us ± 255.596us (23.107us ... 833.448us)     23.98us    833.448us  833.448us
-generate 8192 ids      100      99.937ms       999.372us ± 12.833us  (941.086us ... 1.087ms)      1ms        1.087ms    1.087ms
-generate 10_000 ids    100      121.945ms      1.219ms ± 334.773us   (989.662us ... 1.863ms)      1.056ms    1.863ms    1.863ms
-generate 100_000 ids   100      1.22s          12.2ms ± 327.839us    (11.629ms ... 12.849ms)      12.076ms   12.849ms   12.849ms
-generate 1_000_000 ids 5        635.875ms      127.175ms ± 11.603ms  (121.93ms ... 147.931ms)     122.009ms  147.931ms  147.931ms
+benchmark                runs     total time     time/run (avg ± σ)    (min ... max)                p75        p99        p995      
+-------------------------------------------------------------------------------------------------------------------------------------
+generate 1 ids           100      3.976us        39ns ± 11ns           (37ns ... 151ns)             39ns       151ns      151ns      
+generate 1000 ids        100      11.632ms       116.321us ± 250.21us  (24.782us ... 832.23us)      25.993us   832.23us   832.23us   
+generate 8192 ids        100      99.949ms       999.497us ± 4.35us    (958.405us ... 1.004ms)      1ms        1.004ms    1.004ms    
+generate 10_000 ids      100      121.969ms      1.219ms ± 333.054us   (553.758us ... 1.903ms)      1.243ms    1.903ms    1.903ms    
+generate 100_000 ids     100      1.22s          12.2ms ± 317.531us    (12.002ms ... 12.838ms)      12.05ms    12.838ms   12.838ms   
+generate 1_000_000 ids   5        611.719ms      122.343ms ± 815.925us (121.886ms ... 123.799ms)    122.036ms  123.799ms  123.799ms  
 
 |--------------------|
 | uuid.v7 Benchmarks |
 |--------------------|
-benchmark              runs     total time     time/run (avg ± σ)    (min ... max)                p75        p99        p995
------------------------------------------------------------------------------------------------------------------------------
-uuid.v7 1 ids          100      11.198us       111ns ± 717ns         (36ns ... 7.215us)           38ns       7.215us    7.215us
-uuid.v7 1000 ids       100      2.385ms        23.857us ± 2.125us    (23.052us ... 34.148us)      23.221us   34.148us   34.148us
-uuid.v7 8192 ids       100      19.468ms       194.687us ± 11.031us  (189.236us ... 262.535us)    193.658us  262.535us  262.535us
-uuid.v7 10_000 ids     100      23.74ms        237.405us ± 15.721us  (231.002us ... 353.901us)    236.285us  353.901us  353.901us
-uuid.v7 100_000 ids    100      241.128ms      2.411ms ± 144.497us   (2.321ms ... 3.325ms)        2.418ms    3.325ms    3.325ms
-uuid.v7 1_000_000 ids  5        120.516ms      24.103ms ± 732.673us  (23.432ms ... 25.246ms)      24.356ms   25.246ms   25.246ms
+benchmark               runs     total time     time/run (avg ± σ)    (min ... max)                p75        p99        p995      
+------------------------------------------------------------------------------------------------------------------------------------
+uuid.v7 1 ids           100      6.355us        63ns ± 189ns          (40ns ... 1.933us)           42ns       1.933us    1.933us    
+uuid.v7 1000 ids        100      3.227ms        32.279us ± 768ns      (31.408us ... 37.46us)       32.195us   37.46us    37.46us    
+uuid.v7 8192 ids        100      26.375ms       263.753us ± 16.1us    (256.931us ... 377.435us)    264.247us  377.435us  377.435us  
+uuid.v7 10_000 ids      100      32.969ms       329.697us ± 36.497us  (313.72us ... 584.505us)     324.476us  584.505us  584.505us  
+uuid.v7 100_000 ids     100      323.685ms      3.236ms ± 69.664us    (3.151ms ... 3.639ms)        3.253ms    3.639ms    3.639ms    
+uuid.v7 1_000_000 ids   5        163.708ms      32.741ms ± 1.138ms    (31.982ms ... 34.67ms)       32.888ms   34.67ms    34.67ms    
 
 |--------------------|
 | uuid.v4 Benchmarks |
 |--------------------|
-benchmark              runs     total time     time/run (avg ± σ)    (min ... max)                p75        p99        p995
------------------------------------------------------------------------------------------------------------------------------
-uuid.v4 1 ids          100      2.484us        24ns ± 23ns           (19ns ... 192ns)             20ns       192ns      192ns
-uuid.v4 1000 ids       100      743.067us      7.43us ± 793ns        (7.249us ... 13.897us)       7.361us    13.897us   13.897us
-uuid.v4 8192 ids       100      6.429ms        64.298us ± 15.015us   (54.129us ... 171.768us)     61.291us   171.768us  171.768us
-uuid.v4 10_000 ids     100      7.621ms        76.216us ± 9.973us    (72.672us ... 140.729us)     74.412us   140.729us  140.729us
-uuid.v4 100_000 ids    100      76.153ms       761.537us ± 79.077us  (726.534us ... 1.273ms)      752.914us  1.273ms    1.273ms
-uuid.v4 1_000_000 ids  5        38.277ms       7.655ms ± 447.905us   (7.424ms ... 8.455ms)        7.483ms    8.455ms    8.455ms
+benchmark               runs     total time     time/run (avg ± σ)    (min ... max)                p75        p99        p995      
+------------------------------------------------------------------------------------------------------------------------------------
+uuid.v4 1 ids           100      4.538us        45ns ± 174ns          (24ns ... 1.765us)           26ns       1.765us    1.765us    
+uuid.v4 1000 ids        100      1.494ms        14.947us ± 673ns      (14.534us ... 19.887us)      14.914us   19.887us   19.887us   
+uuid.v4 8192 ids        100      13.046ms       130.464us ± 22.389us  (118.743us ... 258.209us)    127.073us  258.209us  258.209us  
+uuid.v4 10_000 ids      100      15.238ms       152.383us ± 17.32us   (145.349us ... 292.572us)    151.754us  292.572us  292.572us  
+uuid.v4 100_000 ids     100      150.949ms      1.509ms ± 59.983us    (1.449ms ... 1.898ms)        1.524ms    1.898ms    1.898ms    
+uuid.v4 1_000_000 ids   5        76.25ms        15.25ms ± 182.232us   (15.021ms ... 15.495ms)      15.329ms   15.495ms   15.495ms 
 ```

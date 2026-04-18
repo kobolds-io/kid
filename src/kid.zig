@@ -46,10 +46,11 @@ pub fn configure(n_id: u11, options: KIDOptions) void {
     epoch_ms = options.epoch_ms;
 }
 
-pub fn generate() u64 {
+pub fn generate(io: std.Io) u64 {
     while (true) {
         // current time since custom epoch (fits in 40 bits for ~35 years)
-        const now_ms: u64 = @intCast(std.time.milliTimestamp());
+        const now = std.Io.Timestamp.now(io, .real);
+        const now_ms: u64 = @intCast(now.toMilliseconds());
         const ts_delta = (now_ms -| epoch_ms) & ((1 << 40) - 1);
         const ts: u40 = @intCast(ts_delta);
 
@@ -80,10 +81,11 @@ pub fn generate() u64 {
                 // it means that there is an insane amount of contention and you should adjust
                 // your application.
                 const spin_upper_bounds = now_ms + 5;
-
-                var later_ms: u64 = @intCast(std.time.milliTimestamp());
+                var later_ms: u64 = now_ms;
                 while (later_ms < spin_upper_bounds) {
-                    later_ms = @intCast(std.time.milliTimestamp());
+                    const later = std.Io.Timestamp.now(io, .real);
+                    later_ms = @intCast(later.toMilliseconds());
+
                     const later_delta = (later_ms -| epoch_ms) & ((1 << 40) - 1);
                     const later_ts: u40 = @intCast(later_delta);
 

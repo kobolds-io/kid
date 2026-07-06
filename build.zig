@@ -32,6 +32,13 @@ fn setupLibrary(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.b
         .optimize = optimize,
     });
 
+    // Explicitly export the `kidv2` module so it can be imported by others
+    _ = b.addModule("kidv2", .{
+        .root_source_file = b.path("src/kidv2.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
     b.installArtifact(lib);
 }
 
@@ -66,6 +73,12 @@ fn setupBenchmarks(b: *std.Build, target: std.Build.ResolvedTarget, optimize: st
         .optimize = optimize,
     });
 
+    const kidv2_mod = b.addModule("kidv2", .{
+        .root_source_file = b.path("src/kidv2.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
     const uuid_dep = b.dependency("uuid", .{
         .target = target,
         .optimize = optimize,
@@ -79,6 +92,7 @@ fn setupBenchmarks(b: *std.Build, target: std.Build.ResolvedTarget, optimize: st
     const zbench_mod = zbench_dep.module("zbench");
 
     bench_lib.root_module.addImport("kid", kid_mod);
+    bench_lib.root_module.addImport("kidv2", kidv2_mod);
     bench_lib.root_module.addImport("uuid", uuid_mod);
     bench_lib.root_module.addImport("zbench", zbench_mod);
 

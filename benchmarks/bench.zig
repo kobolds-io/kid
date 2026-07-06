@@ -14,5 +14,6 @@ test "prints system info" {
 
 comptime {
     _ = @import("kid.zig");
+    _ = @import("kidv2.zig");
     _ = @import("other.zig");
 }

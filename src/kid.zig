@@ -1,8 +1,6 @@
 const std = @import("std");
 const atomic = std.atomic;
 
-const Signal = @import("stdx").Signal;
-
 const DEFAULT_EPOCH_MS: u64 = 1735689600000; // Jan 1, 2025, in ms
 
 pub const KIDOptions = struct {
